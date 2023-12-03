@@ -134,6 +134,7 @@ const AssignmentGroup = {
 
 
 //how to get today's date in a format that we can compare with the due date
+// stackoverflow 
 let today = new Date();
 let dd = String(today.getDate()).padStart(2, '0');
 let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -142,21 +143,29 @@ today = yyyy + '-' + mm + '-' + dd;
 
 
 
-//getting the ID and the possible points for each assignment that is already due.
+//getting the ID and the possible  max points for each assignment that is already due.
 //all the results are saved first in objects which are pushed in an Array.
  const possiblePoints = []
 AssignmentGroup.assignments.forEach(function(obj) {
   if (obj.due_at <= today ){
-    let idPoints= {'id': obj.id,'points': obj.points_possible}
-    possiblePoints.push(idPoints)
-      
+    let maxPossiblePointForId= {'idAsiignment': obj.id,'pointsMaxPossible': obj.points_possible}
+    possiblePoints.push(maxPossiblePointForId)
+  //}else{
+    //throw `The assignment is not due yet`  
   }
 })
 
 console.log(possiblePoints)
+
+
 // total sum of max possible points  of assesment 1(50p) + assesment 2(150p) 
-let allPoints = 0
+let sumOfPossiblePoints = 0
 possiblePoints.forEach(function(obj){
-  allPoints+= obj.points
+  sumOfPossiblePoints+= obj.pointsMaxPossible
 })
-console.log(allPoints) // 200
+console.log(`Maimum possible points from the due assignments is : ${sumOfPossiblePoints}`) // 200
+
+// another way calculete total max possible points
+/* 
+let sumOfPossiblePoints= possiblePoints[0].pointsMaxPossible + possiblePoints[1].pointsMaxPossible;
+console.log(sumAalll); */
