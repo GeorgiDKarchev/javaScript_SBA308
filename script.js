@@ -169,3 +169,11 @@ console.log(`Maimum possible points from the due assignments is : ${sumOfPossibl
 /* 
 let sumOfPossiblePoints= possiblePoints[0].pointsMaxPossible + possiblePoints[1].pointsMaxPossible;
 console.log(sumAalll); */
+
+//getting only learners ids
+const ids  = []
+LearnerSubmissions.forEach(function(id) {
+  if (!ids.includes(id.learner_id)){
+    ids.push(id.learner_id)
+  } 
+})
