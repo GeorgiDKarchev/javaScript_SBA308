@@ -143,7 +143,11 @@ today = yyyy + '-' + mm + '-' + dd;
  AssignmentGroup.assignments.forEach(function(obj) {
   if (obj.due_at <= today ){
     let maxPossiblePointForId={'idAsiignment': obj.id,'pointsMaxPossible': obj.points_possible}
+    let objectId = {'id' : obj.id}
     possiblePoints.push(maxPossiblePointForId)
+    possiblePoints.push(objectId)
+    possiblePoints.pop()
+
   }else if(isNaN(obj.id)){
     throw `The id is not a number`  
   }
