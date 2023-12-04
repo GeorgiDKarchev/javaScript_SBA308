@@ -96,14 +96,6 @@ const AssignmentGroup = {
       console.log(uniqueLearnerID)
       const result = [];
 
-  
-    function getLearnerData(CourseInfo, AssignmentGroup, [LearnerSubmission]){
-    //here we would process this data to achieve the  desired result.
-
-    };
-
-  result.push(uniqueLearnerID)
-  //for loop each
 
   console.log(result)
 
@@ -131,6 +123,8 @@ const AssignmentGroup = {
 //      return an error 'invalid course ID'
 //  }
 
+function getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions){
+
 
 
 //how to get today's date in a format that we can compare with the due date
@@ -146,15 +140,16 @@ today = yyyy + '-' + mm + '-' + dd;
 //getting the ID and the possible  max points for each assignment that is already due.
 //all the results are saved first in objects which are pushed in an Array.
  const possiblePoints = []
-AssignmentGroup.assignments.forEach(function(obj) {
+ AssignmentGroup.assignments.forEach(function(obj) {
   if (obj.due_at <= today ){
-    let maxPossiblePointForId= {'idAsiignment': obj.id,'pointsMaxPossible': obj.points_possible}
+    let maxPossiblePointForId={'idAsiignment': obj.id,'pointsMaxPossible': obj.points_possible}
     possiblePoints.push(maxPossiblePointForId)
-  //}else{
-    //throw `The assignment is not due yet`  
+  }else if(isNaN(obj.id)){
+    throw `The id is not a number`  
   }
-})
 
+})
+console.log(`Object of ID's and points max for each assignment due`)
 console.log(possiblePoints)
 
 
@@ -163,17 +158,68 @@ let sumOfPossiblePoints = 0
 possiblePoints.forEach(function(obj){
   sumOfPossiblePoints+= obj.pointsMaxPossible
 })
-console.log(`Maimum possible points from the due assignments is : ${sumOfPossiblePoints}`) // 200
+console.log(`Maximum possible points from the due assignments is : ${sumOfPossiblePoints}`) // 200
 
-// another way calculete total max possible points
+// another way to calculete total max possible points
 /* 
 let sumOfPossiblePoints= possiblePoints[0].pointsMaxPossible + possiblePoints[1].pointsMaxPossible;
 console.log(sumAalll); */
 
-//getting only learners ids
+//getting only learners ids second option 
 const ids  = []
-LearnerSubmissions.forEach(function(id) {
-  if (!ids.includes(id.learner_id)){
-    ids.push(id.learner_id)
-  } 
+
+  LearnerSubmissions.forEach(function(id) {
+  try{
+    if(id.learner_id>0){
+      if (!ids.includes(id.learner_id)){
+        ids.push(id.learner_id)
+      }
+    } else {
+    throw "The number is negative"
+    }
+  }catch (error){
+   console.log(error);
+ }
 })
+console.log(` learners Id's # are : ${ids}`)
+
+//calculating points that each student have for all tasks and saving  id and total points to list of objects
+function calculateStudentPoints (index){
+let score = 0 
+for(let i = 0; i < LearnerSubmissions.length; i ++){
+    possiblePoints.forEach(function(x){
+      if (LearnerSubmissions[i].assignment_id === x.idAsiignment && LearnerSubmissions[i].learner_id === ids[index]){
+        score += LearnerSubmissions[i].submission.score
+        id = LearnerSubmissions[i].assignment_id
+        }else{
+        }
+      })
+  }
+let learnerSubmitionData ={'id': ids[index], 'score': score}
+return learnerSubmitionData
+}
+ 
+//calculation avarage points for each of the sturents by deviding their points by the total points available
+const learnerIdAndAvg = [] 
+for (person in ids){
+  //console.log(calculateStudentPoints(person).score)
+  //console.log(ids[person])
+  avg = calculateStudentPoints(person).score / sumOfPossiblePoints
+  learnerIdAndAvg.push({'id' : ids[person], 'avg' : avg })
+} 
+console.log(`---Learner Id and avarage result-----`)
+console.log(learnerIdAndAvg)
+
+
+let result = []
+for (let i in learnerIdAndAvg){
+  id = learnerIdAndAvg[i].id
+  avg = learnerIdAndAvg[i].avg
+  assignment_id = possiblePoints[i].idAsiignment
+  result.push({id: id, avg : avg, assignment_id : assignment_id})
+}
+console.log(result)
+
+
+};
+console.log(getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions))
